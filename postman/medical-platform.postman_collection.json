@@ -1,0 +1,771 @@
+{
+  "info": {
+    "name": "医疗管理平台-接口测试",
+    "description": "medical_platform 全量接口测试集合。5个资源文件夹(01-05)为正向用例,文件夹06为参数校验与异常场景(重点产出缺陷)。使用前确认后端已启动,base_url 变量指向服务地址。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "01 科室 Department",
+      "item": [
+        {
+          "name": "01-01 GET 查询全部科室",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"响应时间 < 2000ms\", function () { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+            "pm.test(\"返回数组且包含10个科室\", function () { var j = pm.response.json(); pm.expect(j).to.be.an('array'); pm.expect(j.length).to.be.at.least(1); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/departments", "host": ["{{base_url}}"], "path": ["api", "departments"] }
+          }
+        },
+        {
+          "name": "01-02 GET 按ID查询科室(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回对象含 departmentId\", function () { var j = pm.response.json(); pm.expect(j).to.have.property('departmentId'); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/departments/1", "host": ["{{base_url}}"], "path": ["api", "departments", "1"] }
+          }
+        },
+        {
+          "name": "01-03 GET 按名称查询科室(内科)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/departments/name/内科", "host": ["{{base_url}}"], "path": ["api", "departments", "name", "内科"] }
+          }
+        },
+        {
+          "name": "01-04 GET 科室总数",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回数字\", function () { pm.expect(typeof pm.response.json()).to.eql('number'); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/departments/count", "host": ["{{base_url}}"], "path": ["api", "departments", "count"] }
+          }
+        },
+        {
+          "name": "01-05 POST 创建科室",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回创建成功提示\", function () { pm.expect(pm.response.text()).to.include('成功'); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"departmentName\": \"测试科室_自动化\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/departments", "host": ["{{base_url}}"], "path": ["api", "departments"] }
+          }
+        },
+        {
+          "name": "01-06 POST 批量创建科室",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "[ { \"departmentName\": \"批量科室A\" }, { \"departmentName\": \"批量科室B\" } ]", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/departments/batch", "host": ["{{base_url}}"], "path": ["api", "departments", "batch"] }
+          }
+        },
+        {
+          "name": "01-07 PUT 更新科室(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"departmentName\": \"内科(更新后)\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/departments/1", "host": ["{{base_url}}"], "path": ["api", "departments", "1"] }
+          }
+        },
+        {
+          "name": "01-08 DELETE 删除科室(删除刚创建的测试科室)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/departments/999999", "host": ["{{base_url}}"], "path": ["api", "departments", "999999"] },
+            "description": "先在 MySQL 里查出'测试科室_自动化'的真实ID替换999999,删除后再 GET 全部科室验证已消失。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 医生 Doctor",
+      "item": [
+        {
+          "name": "02-01 GET 查询全部医生",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"响应时间 < 2000ms\", function () { pm.expect(pm.response.responseTime).to.be.below(2000); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/doctors", "host": ["{{base_url}}"], "path": ["api", "doctors"] }
+          }
+        },
+        {
+          "name": "02-02 GET 按ID查询医生(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回含 doctorId 和 departmentId\", function () { var j = pm.response.json(); pm.expect(j).to.have.property('doctorId'); pm.expect(j).to.have.property('departmentId'); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/doctors/1", "host": ["{{base_url}}"], "path": ["api", "doctors", "1"] }
+          }
+        },
+        {
+          "name": "02-03 GET 按姓名搜索医生(name=李)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"结果均包含关键字\", function () { var j = pm.response.json(); j.forEach(function(d){ pm.expect(d.name).to.include('李'); }); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/doctors/search?name=李", "host": ["{{base_url}}"], "path": ["api", "doctors", "search"], "query": [{ "key": "name", "value": "李" }] }
+          }
+        },
+        {
+          "name": "02-04 GET 按科室查询医生(departmentId=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/doctors/department/1", "host": ["{{base_url}}"], "path": ["api", "doctors", "department", "1"] }
+          }
+        },
+        {
+          "name": "02-05 GET 医生总数",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/doctors/count", "host": ["{{base_url}}"], "path": ["api", "doctors", "count"] }
+          }
+        },
+        {
+          "name": "02-06 POST 创建医生",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"name\": \"测试医生\", \"gender\": \"M\", \"departmentId\": 1, \"title\": \"主治医师\", \"phone\": \"13800000001\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/doctors", "host": ["{{base_url}}"], "path": ["api", "doctors"] }
+          }
+        },
+        {
+          "name": "02-07 POST 批量创建医生",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "[ { \"name\": \"批量医生A\", \"gender\": \"M\", \"departmentId\": 1, \"title\": \"住院医师\", \"phone\": \"13800000002\" }, { \"name\": \"批量医生B\", \"gender\": \"F\", \"departmentId\": 2, \"title\": \"住院医师\", \"phone\": \"13800000003\" } ]", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/doctors/batch", "host": ["{{base_url}}"], "path": ["api", "doctors", "batch"] }
+          }
+        },
+        {
+          "name": "02-08 PUT 更新医生(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"name\": \"张伟(更新)\", \"gender\": \"M\", \"departmentId\": 1, \"title\": \"主任医师\", \"phone\": \"13800000009\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/doctors/1", "host": ["{{base_url}}"], "path": ["api", "doctors", "1"] }
+          }
+        },
+        {
+          "name": "02-09 DELETE 删除医生",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/doctors/999999", "host": ["{{base_url}}"], "path": ["api", "doctors", "999999"] },
+            "description": "替换为02-06创建的'测试医生'真实ID,删除后查询验证。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 患者 Patient",
+      "item": [
+        {
+          "name": "03-01 GET 查询全部患者(⚠️5万条全量,观察响应时间)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "console.log('响应大小(KB): ' + (pm.response.responseSize/1024).toFixed(1) + ' | 耗时(ms): ' + pm.response.responseTime);"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] },
+            "description": "无分页全量查询。记录响应体和耗时,作为性能缺陷证据。"
+          }
+        },
+        {
+          "name": "03-02 GET 按ID查询患者(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/1", "host": ["{{base_url}}"], "path": ["api", "patients", "1"] }
+          }
+        },
+        {
+          "name": "03-03 GET 按姓名搜索患者(name=王)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/search?name=王", "host": ["{{base_url}}"], "path": ["api", "patients", "search"], "query": [{ "key": "name", "value": "王" }] }
+          }
+        },
+        {
+          "name": "03-04 GET 患者总数",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"数量>=50000\", function () { pm.expect(pm.response.json()).to.be.at.least(50000); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/count", "host": ["{{base_url}}"], "path": ["api", "patients", "count"] }
+          }
+        },
+        {
+          "name": "03-05 GET 患者含病历(id=1,多表关联)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回含 medicalRecords 字段\", function () { pm.expect(pm.response.json()).to.have.property('medicalRecords'); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/1/with-records", "host": ["{{base_url}}"], "path": ["api", "patients", "1", "with-records"] }
+          }
+        },
+        {
+          "name": "03-06 GET 患者详情聚合(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/1/details", "host": ["{{base_url}}"], "path": ["api", "patients", "1", "details"] }
+          }
+        },
+        {
+          "name": "03-07 GET 患者含全部记录(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/1/with-all-records", "host": ["{{base_url}}"], "path": ["api", "patients", "1", "with-all-records"] }
+          }
+        },
+        {
+          "name": "03-08 GET 科室患者统计",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回数组\", function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/stats/department", "host": ["{{base_url}}"], "path": ["api", "patients", "stats", "department"] },
+            "description": "统计接口:核对各科室数量之和是否等于患者总数。"
+          }
+        },
+        {
+          "name": "03-09 POST 创建患者",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"name\": \"测试患者\", \"gender\": \"M\", \"birthDate\": \"1990-05-01 00:00:00\", \"phone\": \"13900000001\", \"idCard\": \"1000050002\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] }
+          }
+        },
+        {
+          "name": "03-10 POST 批量创建患者",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "[ { \"name\": \"批量患者A\", \"gender\": \"F\", \"birthDate\": \"1988-03-02 00:00:00\", \"phone\": \"13900000002\", \"idCard\": \"1000050003\" }, { \"name\": \"批量患者B\", \"gender\": \"M\", \"birthDate\": \"1992-07-15 00:00:00\", \"phone\": \"13900000003\", \"idCard\": \"1000050004\" } ]", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/patients/batch", "host": ["{{base_url}}"], "path": ["api", "patients", "batch"] }
+          }
+        },
+        {
+          "name": "03-11 PUT 更新患者(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"name\": \"李芳(更新)\", \"gender\": \"F\", \"birthDate\": \"1985-01-01 00:00:00\", \"phone\": \"13900000009\", \"idCard\": \"110101198501011234\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/patients/1", "host": ["{{base_url}}"], "path": ["api", "patients", "1"] }
+          }
+        },
+        {
+          "name": "03-12 DELETE 删除患者",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/patients/999999", "host": ["{{base_url}}"], "path": ["api", "patients", "999999"] },
+            "description": "⚠️重点:删除患者后到 MySQL 检查该患者的病历和检查申请是否被级联删除/成为孤儿数据,记录实际行为。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 病历 MedicalRecord",
+      "item": [
+        {
+          "name": "04-01 GET 查询全部病历",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "console.log('响应大小(KB): ' + (pm.response.responseSize/1024).toFixed(1) + ' | 耗时(ms): ' + pm.response.responseTime);"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records", "host": ["{{base_url}}"], "path": ["api", "medical-records"] },
+            "description": "10万条全量返回,记录耗时作为性能证据。"
+          }
+        },
+        {
+          "name": "04-02 GET 按ID查询病历(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/1", "host": ["{{base_url}}"], "path": ["api", "medical-records", "1"] }
+          }
+        },
+        {
+          "name": "04-03 GET 按患者查询病历(patientId=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/patient/1", "host": ["{{base_url}}"], "path": ["api", "medical-records", "patient", "1"] }
+          }
+        },
+        {
+          "name": "04-04 GET 按医生查询病历(doctorId=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/doctor/1", "host": ["{{base_url}}"], "path": ["api", "medical-records", "doctor", "1"] }
+          }
+        },
+        {
+          "name": "04-05 GET 病历总数",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/count", "host": ["{{base_url}}"], "path": ["api", "medical-records", "count"] }
+          }
+        },
+        {
+          "name": "04-06 POST 创建病历",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"patientId\": 1, \"doctorId\": 1, \"visitDate\": \"2026-10-08 09:30:00\", \"symptoms\": \"发热、咳嗽\", \"diagnosis\": \"上呼吸道感染\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/medical-records", "host": ["{{base_url}}"], "path": ["api", "medical-records"] }
+          }
+        },
+        {
+          "name": "04-07 POST 批量创建病历",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "[ { \"patientId\": 1, \"doctorId\": 1, \"visitDate\": \"2026-10-08 10:00:00\", \"symptoms\": \"头痛\", \"diagnosis\": \"高血压\" }, { \"patientId\": 2, \"doctorId\": 1, \"visitDate\": \"2026-10-08 10:30:00\", \"symptoms\": \"腹痛\", \"diagnosis\": \"肠胃炎\" } ]", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/medical-records/batch", "host": ["{{base_url}}"], "path": ["api", "medical-records", "batch"] }
+          }
+        },
+        {
+          "name": "04-08 PUT 更新病历(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"patientId\": 1, \"doctorId\": 1, \"visitDate\": \"2026-10-08 11:00:00\", \"symptoms\": \"发热(复诊)\", \"diagnosis\": \"支气管炎\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/medical-records/1", "host": ["{{base_url}}"], "path": ["api", "medical-records", "1"] }
+          }
+        },
+        {
+          "name": "04-09 DELETE 删除病历",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/999999", "host": ["{{base_url}}"], "path": ["api", "medical-records", "999999"] },
+            "description": "替换为04-06创建的病历真实ID。"
+          }
+        },
+        {
+          "name": "04-10 DELETE 按患者删除其全部病历(patientId=2,危险操作)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/patient/2", "host": ["{{base_url}}"], "path": ["api", "medical-records", "patient", "2"] },
+            "description": "⚠️执行前先在 MySQL 统计 patient_id=2 的病历数,执行后对比。测试环境专用,记录该接口是否缺少确认机制。"
+          }
+        },
+        {
+          "name": "04-11 DELETE 按医生删除其全部病历(doctorId=2,危险操作)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/medical-records/doctor/2", "host": ["{{base_url}}"], "path": ["api", "medical-records", "doctor", "2"] },
+            "description": "同04-10,验证前先记录该医生的病历数量。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 检查申请 ExaminationRequest",
+      "item": [
+        {
+          "name": "05-01 GET 查询全部检查申请",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "console.log('响应大小(KB): ' + (pm.response.responseSize/1024).toFixed(1) + ' | 耗时(ms): ' + pm.response.responseTime);"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests", "host": ["{{base_url}}"], "path": ["api", "examination-requests"] }
+          }
+        },
+        {
+          "name": "05-02 GET 按ID查询检查申请(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"返回含 status 字段\", function () { pm.expect(pm.response.json()).to.have.property('status'); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/1", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "1"] }
+          }
+        },
+        {
+          "name": "05-03 GET 按患者查询检查申请(patientId=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/patient/1", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "patient", "1"] }
+          }
+        },
+        {
+          "name": "05-04 GET 按医生查询检查申请(doctorId=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/doctor/1", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "doctor", "1"] }
+          }
+        },
+        {
+          "name": "05-05 GET 按状态查询(pending)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });",
+            "pm.test(\"结果状态均为pending\", function () { var j = pm.response.json(); j.forEach(function(r){ pm.expect(r.status).to.eql('pending'); }); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/status/pending", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "status", "pending"] }
+          }
+        },
+        {
+          "name": "05-06 GET 检查申请总数",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/count", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "count"] }
+          }
+        },
+        {
+          "name": "05-07 POST 创建检查申请",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"patientId\": 1, \"doctorId\": 1, \"requestDate\": \"2026-10-08 14:00:00\", \"examinationType\": \"血常规\", \"status\": \"pending\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/examination-requests", "host": ["{{base_url}}"], "path": ["api", "examination-requests"] }
+          }
+        },
+        {
+          "name": "05-08 POST 批量创建检查申请",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "[ { \"patientId\": 1, \"doctorId\": 1, \"requestDate\": \"2026-10-08 15:00:00\", \"examinationType\": \"CT\", \"status\": \"pending\" }, { \"patientId\": 2, \"doctorId\": 1, \"requestDate\": \"2026-10-08 15:10:00\", \"examinationType\": \"B超\", \"status\": \"pending\" } ]", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/examination-requests/batch", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "batch"] }
+          }
+        },
+        {
+          "name": "05-09 PUT 更新检查申请(id=1)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"patientId\": 1, \"doctorId\": 1, \"requestDate\": \"2026-10-08 16:00:00\", \"examinationType\": \"心电图\", \"status\": \"pending\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/examination-requests/1", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "1"] }
+          }
+        },
+        {
+          "name": "05-10 PUT 修改检查状态(id=1 → completed,场景法核心)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/1/status?status=completed", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "1", "status"], "query": [{ "key": "status", "value": "completed" }] },
+            "description": "状态流转:pending→completed。执行后用 05-02 查询 id=1 验证 status 已变更。"
+          }
+        },
+        {
+          "name": "05-11 DELETE 删除检查申请",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/999999", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "999999"] },
+            "description": "替换为05-07创建的检查单真实ID。"
+          }
+        },
+        {
+          "name": "05-12 DELETE 按患者删除全部检查申请(patientId=3,危险操作)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/patient/3", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "patient", "3"] },
+            "description": "先统计 patient_id=3 的检查申请数,执行后对比。"
+          }
+        },
+        {
+          "name": "05-13 DELETE 按医生删除全部检查申请(doctorId=3,危险操作)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test(\"状态码为 200\", function () { pm.response.to.have.status(200); });"
+          ]}}],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/doctor/3", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "doctor", "3"] },
+            "description": "同05-12。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 参数校验与异常场景(缺陷重点区)",
+      "item": [
+        {
+          "name": "06-01 ❌POST 科室-名称为空",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text());"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"departmentName\": \"\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/departments", "host": ["{{base_url}}"], "path": ["api", "departments"] },
+            "description": "期望:400 或业务提示。若返回 200/500 或成功入库 → 缺陷:缺少参数校验。到 MySQL 确认是否插入了空名称记录。"
+          }
+        },
+        {
+          "name": "06-02 ❌POST 科室-重复名称(内科)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text());"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"departmentName\": \"内科\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/departments", "host": ["{{base_url}}"], "path": ["api", "departments"] },
+            "description": "验证业务规则:科室是否允许重名。若允许 → 记录为业务缺陷(数据表存在重复科室)。"
+          }
+        },
+        {
+          "name": "06-03 ❌GET 科室-不存在的ID",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text());"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/departments/99999999", "host": ["{{base_url}}"], "path": ["api", "departments", "99999999"] },
+            "description": "期望:404 或明确提示。若返回 null/空串 → 缺陷:无资源处理不规范。"
+          }
+        },
+        {
+          "name": "06-04 ❌POST 患者-缺少必填字段idCard",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text());"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"name\": \"无证件患者\", \"gender\": \"男\", \"birthDate\": \"1990-01-01 00:00:00\", \"phone\": \"13911111111\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] },
+            "description": "期望:400 必填校验。若成功创建 → 缺陷:必填字段未校验。"
+          }
+        },
+        {
+          "name": "06-05 ❌POST 患者-日期仅yyyy-MM-dd(格式边界)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text().substring(0, 200));"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"name\": \"日期边界患者\", \"gender\": \"女\", \"birthDate\": \"1990-01-01\", \"phone\": \"13922222222\", \"idCard\": \"110101199001014321\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/patients", "host": ["{{base_url}}"], "path": ["api", "patients"] },
+            "description": "系统 Jackson 配置的格式是 yyyy-MM-dd HH:mm:ss,此处故意传 1990-01-01。观察报错是否暴露内部异常信息(若是 → 规范性缺陷:错误响应泄露技术细节)。"
+          }
+        },
+        {
+          "name": "06-06 ❌POST 病历-引用不存在的患者",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text().substring(0, 300));"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"patientId\": 999999999, \"doctorId\": 999999999, \"visitDate\": \"2026-10-08 09:00:00\", \"symptoms\": \"测试\", \"diagnosis\": \"测试\" }", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/medical-records", "host": ["{{base_url}}"], "path": ["api", "medical-records"] },
+            "description": "期望:400 关联校验。若返回 500 且响应体含 SQL 异常信息 → 缺陷:未做外键校验 + 泄露堆栈信息给调用方。"
+          }
+        },
+        {
+          "name": "06-07 ❌POST 批量科室-第3条非法(验证回滚)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text());"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "[ { \"departmentName\": \"回滚测试A\" }, { \"departmentName\": \"回滚测试B\" }, { \"departmentName\": null } ]", "options": { "raw": "json" } },
+            "url": { "raw": "{{base_url}}/api/departments/batch", "host": ["{{base_url}}"], "path": ["api", "departments", "batch"] },
+            "description": "⚠️核心用例:先执行 GET /api/departments/count 记下数字,跑本请求,再查 count。若返回'失败'但前两条已入库(数量+2) → 缺陷:批量操作无事务回滚,部分成功导致数据不一致。"
+          }
+        },
+        {
+          "name": "06-08 ❌PUT 检查状态-非法值 xyz(状态流转校验)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "console.log('实际状态码: ' + pm.response.code + ' | 响应: ' + pm.response.text());"
+          ]}}],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/examination-requests/1/status?status=xyz", "host": ["{{base_url}}"], "path": ["api", "examination-requests", "1", "status"], "query": [{ "key": "status", "value": "xyz" }] },
+            "description": "合法值仅 pending/completed/cancelled。期望:400 拒绝。若 200 且库中 status 变成 xyz → 缺陷:状态机未校验,脏数据可入库。执行后用 05-02 查询 id=1 核对。"
+          }
+        }
+      ]
+    }
+  ]
+}

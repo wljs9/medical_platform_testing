@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# 日志与临时
+*.log
+
+# JMeter 报告静态资源(只保留 index.html / statistics.json,忽略体积巨大的第三方前端资源)
+jmeter/report_*/content/
+jmeter/report_*/sbadmin2-1.0.7/
+
+# 测试临时数据
+*.jtl.bak
+
+# Newman / 数据
+.postman_collection_
